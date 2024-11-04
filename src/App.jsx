@@ -7,10 +7,43 @@ import CheckoutPage from "./pages/CheckoutPage";
 import PaymentResultPage from "./pages/PaymentResultPage";
 import { CartProvider } from "./context/CardContext";
 import CartPage from "./pages/CartPage";
+import { MdOutlineErrorOutline } from "react-icons/md";
 import Header from "./components/Header";
+import { useEffect, useRef, useState } from "react";
 
 // Main App component
 const App = () => {
+  const containerRef = useRef(null);
+  const [isLaptop, setIsLaptop] = useState(true);
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      if (window.innerWidth < 1024) {
+        setIsLaptop(false);
+      } else {
+        setIsLaptop(true);
+      }
+    };
+
+    checkScreenSize();
+
+    window.addEventListener("resize", checkScreenSize);
+
+    return () => {
+      window.removeEventListener("resize", checkScreenSize);
+    };
+  }, []);
+
+  if (!isLaptop) {
+    return (
+      <div className="flex flex-col justify-center items-center min-h-screen px-10">
+        <MdOutlineErrorOutline size="40px" />
+        <h1 className="mt-5 sm:text-2xl font-semibold text-center">
+          Please use a laptop for the best experience
+        </h1>
+      </div>
+    );
+  }
   return (
     // Wrap the entire app with the CartProvider to provide cart context
     <CartProvider>
